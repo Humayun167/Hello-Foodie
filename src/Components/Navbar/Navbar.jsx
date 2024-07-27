@@ -1,13 +1,20 @@
 import "./Navbar.css";
 import { assets } from "./../../assets/Images/assets";
 import { useContext, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate,  } from "react-router-dom";
 import { StoreContext } from "../../Context/StoreContext";
 const Navbar = ({ setShowLogin }) => {
   const [menu, setMenu] = useState("menu");
 
-  const { getTotalCartAmount } = useContext(StoreContext);
+  const { getTotalCartAmount,token,setToken } = useContext(StoreContext);
   // const {getTotalCartAmount} = useContext(StoreContext)
+
+  const logout = ()=>{
+    localStorage.removeItem("token");
+    setToken("");
+    Navigate("/")
+  }
+
   return (
     <div>
       <div className="navbar">
@@ -16,31 +23,10 @@ const Navbar = ({ setShowLogin }) => {
         </Link>
         <ul className="navbar-menu">
           <Link to="/">
-            <li
-              onClick={() => setMenu("home")}
-              className={menu === "home" ? "active" : ""}
-            >
-              Home
-            </li>
-          </Link>
-          <li href="#menu"
-            onClick={() => setMenu("menu")}
-            className={menu === "menu" ? "active" : ""}
-          >
-            Menu
-          </li>
-          <li
-            onClick={() => setMenu("mobile-app")}
-            className={menu === "mobile-app" ? "active" : ""}
-          >
-            Mobile App
-          </li>
-          <li
-            onClick={() => setMenu("contact-us")}
-            className={menu === "contact-us" ? "active" : ""}
-          >
-            Contact us
-          </li>
+          <li onClick={() => setMenu("home")}  className={menu === "home" ? "active" : ""}> Home</li> </Link>
+          <li href="#menu"   onClick={() => setMenu("menu")}className={menu === "menu" ? "active" : ""}> Menu</li>
+          <li onClick={() => setMenu("mobile-app")}className={menu === "mobile-app" ? "active" : ""}> Mobile App </li>
+          <li onClick={() => setMenu("contact-us")} className={menu === "contact-us" ? "active" : ""} >Contact us </li>
         </ul>
         <div className="navbar-right">
           <img src={assets.search_icon} alt="" />
@@ -50,7 +36,16 @@ const Navbar = ({ setShowLogin }) => {
             </Link>
             <div className={getTotalCartAmount() === 0 ? "" : "dot"}></div>
           </div>
-          <button onClick={() => setShowLogin(true)}>Sign In</button>
+          {!token?<button onClick={() => setShowLogin(true)}>Sign In</button>:
+          <div className="navbar-profile">
+            <img src={assets.profile_icon} alt="" />
+            <ul className="nav-profile-dropdown">
+            <li><img src={assets.bag_icon} alt="" /><p>Orders</p></li>
+            <hr />
+            <li onClick={logout}><img src={assets.logout_icon} alt="" /><p>Logout</p></li>
+            </ul>
+            </div>}
+          
         </div>
       </div>
     </div>
